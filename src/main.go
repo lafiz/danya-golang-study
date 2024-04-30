@@ -4,28 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"syscall"
 )
 
-func exitOnEnterKeyPress(){
-	fmt.Print("Нажмите любую клавишу для завершения...")
-
-	s := bufio.NewScanner(bufio.NewReader(os.Stdin))
-	skipLast := true
-
-	for s.Scan() {
-		if(skipLast){
-			skipLast = false
-			continue
-		}
-
-		if s.Text() == "" {
-			os.Exit(int(syscall.SIGQUIT))
-		}
-	}
-}
-
-func calculate(){
+func calculate() float64 {
 	var first, second, res float64
 	var operation string
 
@@ -51,9 +32,43 @@ func calculate(){
 	}
 
 	fmt.Println("Итоговое значение = " + fmt.Sprint(res))
+
+	return res
+}
+
+func saveResultToFile(result float64) {
+	textfile, err := os.Create("result.txt")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	textfile.WriteString("Итоговое значение = " + fmt.Sprint(result))
+	textfile.Close()
+}
+
+func exitOnEnterKeyPress() {
+	fmt.Print("Нажмите любую клавишу для завершения...")
+
+	s := bufio.NewScanner(bufio.NewReader(os.Stdin))
+	skipLast := true
+
+	for s.Scan() {
+		if skipLast {
+			skipLast = false
+			continue
+		}
+
+		if s.Text() == "" {
+			os.Exit(0)
+		}
+	}
 }
 
 func main() {
-	calculate()
+	var calculatedValue = calculate()
+	saveResultToFile(calculatedValue)
+
 	exitOnEnterKeyPress()
 }
