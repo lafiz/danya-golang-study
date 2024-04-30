@@ -1,2 +1,2 @@
 #!/bin/bash
-go fmt src/**/*.go
+go fmt src/*.go
